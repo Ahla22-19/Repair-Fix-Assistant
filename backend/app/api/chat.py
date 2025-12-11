@@ -1,9 +1,14 @@
+from pydantic import BaseModel
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from app.db.database import SessionLocal
 from app.db.models import User, ChatMessage
+from fastapi import APIRouter
+router = APIRouter()
 
-
+class ChatRequest(BaseModel):
+    message: str
+    
 MAX_MESSAGES = 50
 
 def manage_context(db: Session, user_email: str):
