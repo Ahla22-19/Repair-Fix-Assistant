@@ -1,10 +1,15 @@
 from langgraph import Agent
 from app.tools.ifixit import IFixitTool
 from app.tools.web_search import WebSearchTool
+from langgraph import SQLiteSaver
 
 class RepairAgent(Agent):
     def __init__(self):
         super().__init__()
+        # Optional: Persistent saver using SQLite
+        saver = SQLiteSaver(db_path="./repair_fix.db")
+        self.set_saver(saver)
+
         self.ifixit = IFixitTool()
         self.web_search = WebSearchTool()
 

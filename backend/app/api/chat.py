@@ -3,6 +3,21 @@ from sqlalchemy.orm import Session
 from app.db.database import SessionLocal
 from app.db.models import User, ChatMessage
 
+
+MAX_MESSAGES = 50
+
+def manage_context(db: Session, user_email: str):
+    user = db.query(User).filter(User.email == user_email).first()
+    if not user:
+        return
+    messages = db.query(ChatMessage).filter(ChatMessage.user_id == user.id).order_by(ChatMessage.id.asc()).all()
+    if len(messages) <= MAX_MESSAGES:
+        return
+    # Delete older messages, keep only last MAX_MESSAGES
+    for msg in messages[:-MAX_MESSAGES]:
+        db.delete(msg)
+    db.commit()
+
 def get_db():
     db = SessionLocal()
     try:
